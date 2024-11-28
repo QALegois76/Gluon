@@ -1,0 +1,49 @@
+name: docker_compose_Gluon
+services:
+  client.sqlsvr:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlsvr.client
+    ports:
+      - 1433:1433
+    environment:
+      SA_PASSWORD: "P@$$w0rd" # Mot de passe pour l'utilisateur 'sa'
+      ACCEPT_EULA: "Y" # Acceptation de la licence 
+    volumes:
+      - client_data:/var/opt/mssql
+    restart: always
+    
+  auth.sqlsvr:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlsvr.auth
+    ports:
+      - 1434:1433
+    environment:
+      SA_PASSWORD: "P@$$w0rd" # Mot de passe pour l'utilisateur 'sa'
+      ACCEPT_EULA: "Y" # Acceptation de la licence 
+    volumes:
+      - auth_data:/var/opt/mssql
+    restart: always
+ 
+  client.api:
+    image: ${DOCKER_REGISTRY-}clientapi
+    build:
+      context: .
+      dockerfile: Client.Api/Dockerfile
+    depends_on:
+      - client.sqlsvr
+  
+  auth.api:
+    image: ${DOCKER_REGISTRY-}authapi
+    build:
+      context: .
+      dockerfile: Auth.Api/Dockerfile
+    depends_on:
+      - auth.sqlsvr
+
+
+volumes:
+  client_data:
+    driver: local
+  auth_data:
+    driver: local
+
