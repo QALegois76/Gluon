@@ -1,16 +1,38 @@
 name: docker_compose_Gluon
+
 services:
+
+
+# NGINX #########################################################################
+
+  nginx:
+    image: nginx:alpine
+    container_name: NGINX_gluon
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro    # Configuration des serveurs virtuels
+      - ./nginx/certs:/etc/nginx/certs:ro    # Certificats SSL (si besoin)
+      - ./nginx/logs:/var/log/nginx          # Logs pour debug
+      - ./nginx/html:/usr/share/nginx/html:ro # Fichiers statiques (optionnel)
+    restart: always
+
+
+# SQL #########################################################################
+
   client.sqlsvr:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: sqlsvr.client
+    user: root
     ports:
       - 1433:1433
     environment:
-      SA_PASSWORD: "P@$$w0rd" # Mot de passe pour l'utilisateur 'sa'
+      SA_PASSWORD: "P@$$w0rd_24" # Mot de passe pour l'utilisateur 'sa'
       ACCEPT_EULA: "Y" # Acceptation de la licence 
     volumes:
-      - client_data:/var/opt/mssql
-    restart: always
+      - ./data/clientData:/var/opt/mssql/data
+    # restart: always
     
   auth.sqlsvr:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -18,12 +40,15 @@ services:
     ports:
       - 1434:1433
     environment:
-      SA_PASSWORD: "P@$$w0rd" # Mot de passe pour l'utilisateur 'sa'
+      SA_PASSWORD: "P@$$w0rd_24" # Mot de passe pour l'utilisateur 'sa'
       ACCEPT_EULA: "Y" # Acceptation de la licence 
     volumes:
-      - auth_data:/var/opt/mssql
-    restart: always
+      - ./data/authData:/var/opt/mssql/data
+    # restart: always
  
+
+    # API ##############################################################
+
   client.api:
     image: ${DOCKER_REGISTRY-}clientapi
     build:
@@ -40,10 +65,4 @@ services:
     depends_on:
       - auth.sqlsvr
 
-
-volumes:
-  client_data:
-    driver: local
-  auth_data:
-    driver: local
 
