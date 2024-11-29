@@ -28,7 +28,7 @@ services:
     ports:
       - 1433:1433
     environment:
-      SA_PASSWORD: "P@$$w0rd_24" # Mot de passe pour l'utilisateur 'sa'
+      MSSQL_SA_PASSWORD: "ClientDataPassword2024" # Mot de passe pour l'utilisateur 'sa'
       ACCEPT_EULA: "Y" # Acceptation de la licence 
     volumes:
       - ./data/clientData:/var/opt/mssql/data
@@ -40,7 +40,7 @@ services:
     ports:
       - 1434:1433
     environment:
-      SA_PASSWORD: "P@$$w0rd_24" # Mot de passe pour l'utilisateur 'sa'
+      MSSQL_SA_PASSWORD: "P@$$w0rd_24" # Mot de passe pour l'utilisateur 'sa'
       ACCEPT_EULA: "Y" # Acceptation de la licence 
     volumes:
       - ./data/authData:/var/opt/mssql/data
