@@ -5,7 +5,7 @@ using System.Reflection;
 namespace Client.Api.Controllers
 {
     [ApiController]
-    [Route("/")]
+    [Route("[controller]")]
     public class ClientController : ControllerBase
     {
         public const string VERSION = "v1";

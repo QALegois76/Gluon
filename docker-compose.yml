@@ -8,6 +8,8 @@ services:
   nginx:
     image: nginx:alpine
     container_name: NGINX_gluon
+    hostname: gluon
+    domainname: gluon.fr
     ports:
       - 80:80
       - 443:443
